@@ -34,7 +34,7 @@ public class TestBQP extends Ipopt {
     int n, m, nele_jac, nele_hess;
     
     public TestBQP() {
-        
+        n = 3;
         temp = new double[this.n][1];
         mX = new Matrix(temp);
         mQ = new Matrix(Q);
@@ -165,7 +165,7 @@ public class TestBQP extends Ipopt {
 
                     /* the hessian for this problem is actually dense */
                     idx=0;
-                    for (row = 0; row < 4; row++) {
+                    for (row = 0; row < n; row++) {
                             for (col = 0; col <= row; col++) {
                                     iRow[idx] = row;
                                     jCol[idx] = col;
@@ -177,43 +177,21 @@ public class TestBQP extends Ipopt {
                     assert nele_hess == this.nele_hess;
             }
             else {
+                Matrix t = mQ.inverse().plus(mQ);
+                Matrix t2 = t.times(0.5);
                     /* return the values. This is a symmetric matrix, fill the lower left
                      * triangle only */
 
                     /* fill the objective portion */
-                    values[0] = obj_factor * (2*x[3]);               /* 0,0 */
+                    values[0] = obj_factor * t2.get(0, 0);                 /* 0,0 */
 
-                    values[1] = obj_factor * (x[3]);                 /* 1,0 */
-                    values[2] = 0;                                   /* 1,1 */
+                    values[1] = obj_factor * t2.get(1, 0);                 /* 1,0 */
+                    values[2] = obj_factor * t2.get(1, 1);                 /* 1,1 */
 
-                    values[3] = obj_factor * (x[3]);                 /* 2,0 */
-                    values[4] = 0;                                   /* 2,1 */
-                    values[5] = 0;                                   /* 2,2 */
+                    values[3] = obj_factor * t2.get(2, 0);                 /* 2,0 */
+                    values[4] = obj_factor * t2.get(2, 1);                 /* 2,1 */
+                    values[5] = obj_factor * t2.get(2, 2);                 /* 2,2 */
 
-                    values[6] = obj_factor * (2*x[0] + x[1] + x[2]); /* 3,0 */
-                    values[7] = obj_factor * (x[0]);                 /* 3,1 */
-                    values[8] = obj_factor * (x[0]);                 /* 3,2 */
-                    values[9] = 0;                                   /* 3,3 */
-
-
-                    /* add the portion for the first constraint */
-                    values[1] += lambda[0] * (x[2] * x[3]);          /* 1,0 */
-
-                    values[3] += lambda[0] * (x[1] * x[3]);          /* 2,0 */
-                    values[4] += lambda[0] * (x[0] * x[3]);          /* 2,1 */
-
-                    values[6] += lambda[0] * (x[1] * x[2]);          /* 3,0 */
-                    values[7] += lambda[0] * (x[0] * x[2]);          /* 3,1 */
-                    values[8] += lambda[0] * (x[0] * x[1]);          /* 3,2 */
-
-                    /* add the portion for the second constraint */
-                    values[0] += lambda[1] * 2;                      /* 0,0 */
-
-                    values[2] += lambda[1] * 2;                      /* 1,1 */
-
-                    values[5] += lambda[1] * 2;                      /* 2,2 */
-
-                    values[9] += lambda[1] * 2;                      /* 3,3 */
             }
             return true;
     }    

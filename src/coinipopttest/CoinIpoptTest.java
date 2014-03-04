@@ -15,7 +15,7 @@ public class CoinIpoptTest {
     /**
      * @param args the command line arguments
      */
-//    public static void main(String []args){
+    public static void main(String []args){
 //        // Create the problem
 //        HS071 hs071 = new HS071();
 //
@@ -24,6 +24,23 @@ public class CoinIpoptTest {
 //
 //        // solve the problem
 //        hs071.solve(x);
-//    }
+//        
+//        for(int i=0; i<x.length; i++) {
+//            System.out.println(x[i]);
+//        }
+        
+        // Create the problem
+        TestBQP hs071 = new TestBQP();
+
+        // Get the default initial guess
+        double x[] = hs071.getInitialGuess();
+
+        // solve the problem
+        hs071.solve(x);
+        
+        for(int i=0; i<x.length; i++) {
+            System.out.println(x[i]);
+        }
+    }
     
 }
