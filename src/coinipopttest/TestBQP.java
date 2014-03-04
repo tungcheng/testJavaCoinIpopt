@@ -61,7 +61,7 @@ public class TestBQP extends Ipopt {
         double g_U[] = new double[m];
         /* set the values of the constraint bounds */
         g_U[0] = 2;
-        g_L[0] = 2e19;
+        g_L[0] = (-1)*2e19;
 
         /* Index style for the irow/jcol elements */
         int index_style = Ipopt.C_STYLE;
@@ -107,7 +107,7 @@ public class TestBQP extends Ipopt {
         Matrix t = mQ.inverse().plus(mQ);
         Matrix t2 = t.times(mX);
         Matrix t3 = t2.times(0.5);
-        Matrix t4 = mq.inverse().plus(t3);
+        Matrix t4 = mq.plus(t3);
         
         for(int i=0; i<this.n; i++) {
             grad_f[i] = t4.get(i, 0);
