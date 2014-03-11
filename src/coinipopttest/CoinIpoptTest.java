@@ -41,6 +41,17 @@ public class CoinIpoptTest {
         for(int i=0; i<x.length; i++) {
             System.out.println(x[i]);
         }
+        
+        TestBQP hs071_2 = new TestBQP();
+        // Get the default initial guess
+        double x2[] = hs071_2.getInitialGuess();
+
+        // solve the problem
+        hs071_2.solve(x2);
+        
+        for(int i=0; i<x2.length; i++) {
+            System.out.println(x2[i]);
+        }
     }
     
 }
