@@ -13,7 +13,9 @@ import org.coinor.Ipopt;
  *
  * @author TungNT
  */
-public class TestBQP extends Ipopt {
+public class TestDCA extends Ipopt {
+    
+    static final int T = 1000000;
     
     double[][] temp;
     
@@ -34,7 +36,7 @@ public class TestBQP extends Ipopt {
     // Problem sizes
     int n, m, nele_jac, nele_hess;
     
-    public TestBQP() {
+    public TestDCA() {
         n = 3;
         temp = new double[this.n][1];
         mX = new Matrix(temp);
@@ -74,9 +76,9 @@ public class TestBQP extends Ipopt {
     public double[] getInitialGuess(){
         /* allocate space for the initial point and set the values */
         double x[] = new double[3];
-        x[0] = 1.0;
-        x[1] = 1.0;
-        x[2] = 0.0;
+        x[0] = 0.5;
+        x[1] = 0.5;
+        x[2] = 0.5;
 
         return x;
     }
@@ -94,6 +96,10 @@ public class TestBQP extends Ipopt {
         Matrix t3 = mq.inverse().times(mX);
         
         obj_value[0] = 0.5 * t2.get(0, 0) + t3.get(0, 0);
+        
+        for(int i=0; i<this.n; i++) {
+            obj_value[0] += T*Math.min(x[i], 1 - x[i]);
+        }
 
         return true;
     }
@@ -112,6 +118,12 @@ public class TestBQP extends Ipopt {
         
         for(int i=0; i<this.n; i++) {
             grad_f[i] = t4.get(i, 0);
+            if(x[i] < 0.5) {
+                grad_f[i] += T;
+            }
+            else {
+                grad_f[i] += (-T);
+            }
         }
 
         return true;
